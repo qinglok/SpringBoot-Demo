@@ -3,6 +3,7 @@
 package xyz.beingx.basespring.entity.base
 
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedBy
@@ -27,6 +28,7 @@ abstract class BaseEntity(
         @Enumerated(EnumType.ORDINAL)
         var status: EntityStatus? = null,
 
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         @CreatedDate
         @Column
         var createdDate: Date? = null,
@@ -35,6 +37,7 @@ abstract class BaseEntity(
         @Column
         var createdBy: String? = null,
 
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         @LastModifiedDate
         @Column
         var lastModifiedDate: Date? = null,

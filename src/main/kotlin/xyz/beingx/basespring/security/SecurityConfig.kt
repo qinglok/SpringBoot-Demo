@@ -69,6 +69,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                     .antMatchers("/configuration/security").permitAll()
                     // swagger end
 
+                    //test
+                    .antMatchers("/test").permitAll()
+                    .antMatchers("/test/**").permitAll()
+
                     // 对于获取token的rest api要允许匿名访问
                     .antMatchers(HttpMethod.POST, "/token").permitAll() //登录
                     .antMatchers(HttpMethod.POST, "/users").permitAll() //注册
