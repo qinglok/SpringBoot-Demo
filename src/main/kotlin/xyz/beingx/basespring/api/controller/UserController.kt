@@ -48,9 +48,9 @@ class UserController {
 
     @ApiOperation("查询所有用户", authorizations = [Authorization(Roles.user)])
     @ApiResponses(ApiResponse(code = 200, message = "成功"))
-    @ApiImplicitParams(ApiImplicitParam(name = "page", value = "页码，从0开始", dataType = "Int"),
-            ApiImplicitParam(name = "size", value = "每页数量", dataType = "Int"),
-            ApiImplicitParam(name = "excludeSelf", value = "排除当前登录用户", dataType = "Boolean"))
+    @ApiImplicitParams(ApiImplicitParam(name = "page", value = "页码，从0开始", dataType = "Int", example = "1"),
+            ApiImplicitParam(name = "size", value = "每页数量", dataType = "Int", example = "15"),
+            ApiImplicitParam(name = "excludeSelf", value = "排除当前登录用户", dataType = "Boolean", example = "true"))
     @GetMapping
     fun users(page: Int?, size: Int?, excludeSelf: Boolean?): ResponseEntity<Page<User>> {
         val where = Specification.where<User> { root, query, criteriaBuilder ->

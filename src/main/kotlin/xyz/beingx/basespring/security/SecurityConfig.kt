@@ -58,20 +58,18 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                     // 基于token，所以不需要session
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                     .authorizeRequests()
+
+                    // swagger start
+                    .antMatchers("/swagger-ui.html").permitAll()
+                    .antMatchers("/swagger-resources/**").permitAll()
+                    .antMatchers("/images/**").permitAll()
+                    .antMatchers("/webjars/**").permitAll()
+                    .antMatchers("/v2/api-docs").permitAll()
+                    .antMatchers("/configuration/ui").permitAll()
+                    .antMatchers("/configuration/security").permitAll()
+                    // swagger end
+
                     // 对于获取token的rest api要允许匿名访问
-                    .antMatchers(
-                            HttpMethod.GET,
-                            "/",
-                            "/v2/api-docs",           // swagger
-                            "/webjars/**",            // swagger-ui webjars
-                            "/swagger-resources/**",  // swagger-ui resources
-                            "/configuration/**",      // swagger configuration
-                            "/*.html",
-                            "/favicon.ico",
-                            "/**/*.html",
-                            "/**/*.css",
-                            "/**/*.js"
-                    ).permitAll()
                     .antMatchers(HttpMethod.POST, "/token").permitAll() //登录
                     .antMatchers(HttpMethod.POST, "/users").permitAll() //注册
                     // 除上面外的所有请求全部需要鉴权认证
