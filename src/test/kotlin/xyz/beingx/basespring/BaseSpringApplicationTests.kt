@@ -11,6 +11,10 @@ class BaseSpringApplicationTests {
 
 	@Test
 	fun contextLoads() {
+		val set = mutableSetOf<String>()
+		set.add("a")
+		set.add("a")
+		println(set)
 	}
 
 }

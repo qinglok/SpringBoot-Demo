@@ -1,11 +1,9 @@
 package xyz.beingx.basespring.entity.sys
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import xyz.beingx.basespring.entity.EntityStatus
 import xyz.beingx.basespring.entity.base.BaseEntity
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.ManyToMany
-import javax.persistence.Table
+import javax.persistence.*
 
 /**
  * 角色
@@ -16,8 +14,10 @@ class Role(
         @Column(nullable = false, unique = true)
         var name: String? = null,
 
-        @ManyToMany(mappedBy = "roleSet")
-        var userSet: Set<User>? = null,
+        @JsonIgnore
+        @ManyToMany(mappedBy = "roleSet", fetch = FetchType.LAZY)
+        var userSet: MutableSet<User> = mutableSetOf(),
 
+        id: Long? = null,
         status: EntityStatus? = null
-) : BaseEntity(status = status)
+) : BaseEntity(id = id, status = status)

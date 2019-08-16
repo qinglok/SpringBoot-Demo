@@ -38,12 +38,14 @@ class JwtAuthenticationTokenFilter : OncePerRequestFilter() {
 //                authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
 //                SecurityContextHolder.getContext()?.authentication = authentication //将鉴权后的信息放置到Security全局上下文
 //            }
-            val authToken = request.getHeader("token") ?: ""
-            val userName = tokenUtils.getUserNameFromToken(authToken) //从token中解析出userName
-            val userDetails = userDetailsServiceImpl.loadUserByUsername(userName) //从数据库查找相关用户
-            val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
-            authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
-            SecurityContextHolder.getContext()?.authentication = authentication //将鉴权后的信息放置到Security全局上下文
+            val token = request.getHeader("token")
+            if (!token.isNullOrEmpty()) {
+                val userName = tokenUtils.getUserNameFromToken(token) //从token中解析出userName
+                val userDetails = userDetailsServiceImpl.loadUserByUsername(userName) //从数据库查找相关用户
+                val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+                authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
+                SecurityContextHolder.getContext()?.authentication = authentication //将鉴权后的信息放置到Security全局上下文
+            }
         }
 
         chain.doFilter(request, response)

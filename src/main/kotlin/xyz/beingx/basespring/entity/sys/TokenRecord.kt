@@ -9,11 +9,12 @@ import javax.persistence.Table
 @Entity
 @Table(name = "token_records")
 class TokenRecord(
-    @Column
-    var userName: String? = null,
+        @Column
+        var userName: String? = null,
 
-    @Column
-    var token: String? = null,
+        @Column
+        var token: String? = null,
 
-    status: EntityStatus? = null
-) : BaseEntity(status = status)
+        id: Long? = null,
+        status: EntityStatus? = null
+) : BaseEntity(id = id, status = status)

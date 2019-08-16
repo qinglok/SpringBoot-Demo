@@ -30,14 +30,13 @@ dependencies {
 
 	//JWT
 	implementation("com.auth0:java-jwt:3.8.1")
-	//盐加密
-//	implementation("org.mindrot:jbcrypt:0.4")
+
 	//mariadb驱动
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client:2.4.3")
+
 	//用Spring构建的API的自动JSON API文档
 	implementation("io.springfox:springfox-swagger2:2.9.2")
 	implementation("io.springfox:springfox-swagger-ui:2.9.2")
-
 }
 
 tasks.withType<KotlinCompile> {

@@ -1,5 +1,6 @@
 package xyz.beingx.basespring.entity.sys
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import xyz.beingx.basespring.entity.EntityBoolean
 import xyz.beingx.basespring.entity.EntityStatus
 import xyz.beingx.basespring.entity.base.BaseEntity
@@ -14,6 +15,7 @@ class User(
         @Column(nullable = false, unique = true)
         var name: String? = null,
 
+        @JsonIgnore
         @Column(nullable = false)
         var password: String? = null,
 
@@ -21,12 +23,14 @@ class User(
         @Enumerated(EnumType.ORDINAL)
         var isEnable: EntityBoolean? = null,
 
-        @ManyToMany(cascade = [CascadeType.PERSIST], fetch = FetchType.EAGER)
+        @JsonIgnore
+        @ManyToMany(cascade = [CascadeType.PERSIST], fetch = FetchType.LAZY)
         @JoinTable(
                 name = "users_roles",
                 joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
                 inverseJoinColumns = [JoinColumn(name = "role_id", referencedColumnName = "id")])
-        var roleSet: Set<Role>? = null,
+        var roleSet: MutableSet<Role> = mutableSetOf(),
 
+        id: Long? = null,
         status: EntityStatus? = null
-) : BaseEntity(status = status)
+) : BaseEntity(id = id, status = status)

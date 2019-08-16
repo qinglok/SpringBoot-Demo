@@ -9,7 +9,7 @@ import org.springframework.data.domain.Example
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import xyz.beingx.basespring.dao.Dao
-import xyz.beingx.basespring.entity.EntityStatus
+import xyz.beingx.basespring.entity.NORMAL
 import xyz.beingx.basespring.entity.sys.TokenRecord
 import xyz.beingx.basespring.ext.currentUser
 import java.util.*
@@ -51,7 +51,7 @@ class TokenUtils {
 
         deleteToken()
 
-        dao.tokenRecordDao.save(TokenRecord(userDetails.username, token, EntityStatus.NORMAL))
+        dao.tokenRecordDao.save(TokenRecord(userName = userDetails.username, token = token, status = NORMAL))
 
         return token
     }

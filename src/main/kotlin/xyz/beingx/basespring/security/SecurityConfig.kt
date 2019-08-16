@@ -72,10 +72,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                             "/**/*.css",
                             "/**/*.js"
                     ).permitAll()
-                    .antMatchers(HttpMethod.POST, "/token/**").permitAll()
-                    .antMatchers(HttpMethod.POST, "/users/**").permitAll()
+                    .antMatchers(HttpMethod.POST, "/token").permitAll() //登录
+                    .antMatchers(HttpMethod.POST, "/users").permitAll() //注册
                     // 除上面外的所有请求全部需要鉴权认证
-                    .anyRequest().authenticated()
+                    .anyRequest().hasRole(Roles.user)
             httpSecurity.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter::class.java)
             // 禁用缓存
             httpSecurity.headers().cacheControl()

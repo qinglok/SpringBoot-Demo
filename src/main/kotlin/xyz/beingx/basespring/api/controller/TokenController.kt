@@ -1,4 +1,4 @@
-package xyz.beingx.basespring.controller
+package xyz.beingx.basespring.api.controller
 
 import io.swagger.annotations.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,6 +8,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.web.bind.annotation.*
+import xyz.beingx.basespring.api.model.RequestUser
+import xyz.beingx.basespring.api.model.ResponseToken
+import xyz.beingx.basespring.security.Roles
 import xyz.beingx.basespring.security.TokenUtils
 
 @Api(tags = ["令牌"])
@@ -26,11 +29,11 @@ class TokenController {
 
     @ApiOperation("创建Token（登录）")
     @ApiResponses(
-            ApiResponse(code = 200, message = "成功", response = String::class),
+            ApiResponse(code = 200, message = "成功"),
             ApiResponse(code = 403, message = "鉴权失败")
     )
     @PostMapping
-    fun post(@RequestBody requestUser: RequestUser): ResponseEntity<*> {
+    fun post(@RequestBody requestUser: RequestUser): ResponseEntity<ResponseToken> {
         // Perform the security
         val authentication = authenticationManager.authenticate(
                 UsernamePasswordAuthenticationToken(
@@ -43,16 +46,13 @@ class TokenController {
         val userDetails = userDetailsServiceImpl.loadUserByUsername(requestUser.name)
         val token = tokenUtils.createNewToken(userDetails)
 
-        return ResponseEntity.ok(token ?: "")
+        return ResponseEntity.ok(ResponseToken(token = token))
     }
 
-    @ApiOperation("删除Token（退出登录）", authorizations = [Authorization("token")])
-    @ApiResponses(
-            ApiResponse(code = 200, message = "成功"),
-            ApiResponse(code = 403, message = "鉴权失败")
-    )
+    @ApiOperation("删除Token（退出登录）", authorizations = [Authorization(Roles.user)])
+    @ApiResponses(ApiResponse(code = 200, message = "成功"))
     @DeleteMapping
-    fun delete(): ResponseEntity<*> {
+    fun delete(): ResponseEntity<Void> {
         tokenUtils.deleteToken()
         return ResponseEntity.ok().body(null)
     }

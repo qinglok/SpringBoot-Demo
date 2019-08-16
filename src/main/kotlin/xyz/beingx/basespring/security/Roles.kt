@@ -6,8 +6,10 @@ package xyz.beingx.basespring.security
 object Roles {
     const val master = "MASTER"
     const val manager = "MANAGER"
+    const val user = "USER"
 
     val all = arrayOf(
             master,
-            manager)
+            manager,
+            user)
 }

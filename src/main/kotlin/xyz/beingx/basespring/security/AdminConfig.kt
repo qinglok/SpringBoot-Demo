@@ -8,8 +8,8 @@ import org.springframework.data.domain.Example
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import xyz.beingx.basespring.dao.Dao
-import xyz.beingx.basespring.entity.EntityBoolean
-import xyz.beingx.basespring.entity.EntityStatus
+import xyz.beingx.basespring.entity.NORMAL
+import xyz.beingx.basespring.entity.TRUE
 import xyz.beingx.basespring.entity.sys.Role
 import xyz.beingx.basespring.entity.sys.User
 
@@ -39,7 +39,7 @@ class AdminConfig{
 
     fun initRoles() {
         for (value in Roles.all) {
-            val t = Role(name = value, status = EntityStatus.NORMAL)
+            val t = Role(name = value, status = NORMAL)
             if (!dao.roleDao.exists(Example.of(t))) {
                 dao.roleDao.save(t)
             }
@@ -47,18 +47,18 @@ class AdminConfig{
     }
 
     fun initAdmin() {
-        val admin = User(name = adminName, status = EntityStatus.NORMAL, isEnable = EntityBoolean.TRUE)
+        val admin = User(name = adminName, status = NORMAL, isEnable = TRUE)
         if (!dao.userDao.exists(Example.of(admin))) {
             dao.userDao.save(admin.apply { password = passwordEncoder().encode(adminPassword) })
         }
     }
 
     fun setAdminAllRoles() {
-        val example = User(name = adminName, status = EntityStatus.NORMAL, isEnable = EntityBoolean.TRUE)
+        val example = User(name = adminName, status = NORMAL, isEnable = TRUE)
         val optional = dao.userDao.findOne(Example.of(example))
         if (optional.isPresent) {
             val admin = optional.get()
-            val set = dao.roleDao.findAll().toSet()
+            val set = dao.roleDao.findAll().toMutableSet()
             admin.roleSet = set
             dao.userDao.save(admin)
         }
