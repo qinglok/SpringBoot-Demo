@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import xyz.beingx.autoentitykeys.E
 import xyz.beingx.basespring.api.model.RequestUser
 import xyz.beingx.basespring.api.model.ResponseLocation
 import xyz.beingx.basespring.dao.Dao
@@ -39,7 +40,7 @@ class UserController {
     @ApiResponses(ApiResponse(code = 200, message = "成功"), ApiResponse(code = 404, message = "找不到指定的用户"))
     @GetMapping("/{id}")
     fun user(@PathVariable id: Long): ResponseEntity<User> {
-        val optional = dao.userDao.findOne(Example.of(User(id = id)))
+        val optional = dao.userDao.findById(id)
         if (optional.isPresent) {
             return ResponseEntity.ok(optional.get())
         }
@@ -53,13 +54,13 @@ class UserController {
             ApiImplicitParam(name = "excludeSelf", value = "排除当前登录用户", dataType = "Boolean", example = "true"))
     @GetMapping
     fun users(page: Int?, size: Int?, excludeSelf: Boolean?): ResponseEntity<Page<User>> {
-        val where = Specification.where<User> { root, query, criteriaBuilder ->
+        val where = Specification.where<User> { root, _, criteriaBuilder ->
             val list = arrayListOf(
-                    criteriaBuilder.equal(root.get<User>("status").`as`(EntityStatus::class.java), NORMAL),
-                    criteriaBuilder.equal(root.get<User>("isEnable").`as`(EntityBoolean::class.java), TRUE)
+                    criteriaBuilder.equal(root.get<User>(E.E_BaseEntity.status).`as`(EntityStatus::class.java), NORMAL),
+                    criteriaBuilder.equal(root.get<User>(E.E_User.isEnable).`as`(EntityBoolean::class.java), TRUE)
             )
             if (excludeSelf != false) {
-                list.add(criteriaBuilder.notEqual(root.get<User>("name").`as`(String::class.java), currentUser()?.username))
+                list.add(criteriaBuilder.notEqual(root.get<User>(E.E_User.name).`as`(String::class.java), currentUser()?.username))
             }
             criteriaBuilder.and(*list.toArray(Array(list.size) { i -> list[i] }))
         }

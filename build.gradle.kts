@@ -7,15 +7,18 @@ plugins {
 	war
 	kotlin("jvm") version "1.2.71"
 	kotlin("plugin.spring") version "1.2.71"
+	kotlin("kapt") version "1.2.71"
 }
 
 group = "xyz.beingx"
 version = "0.0.1"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
-repositories {
-    maven("https://maven.aliyun.com/repository/central")
-    maven("https://maven.aliyun.com/repository/jcenter")
+allprojects {
+	repositories {
+		maven("https://maven.aliyun.com/repository/central")
+		maven("https://maven.aliyun.com/repository/jcenter")
+	}
 }
 
 dependencies {
@@ -27,6 +30,10 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	compileOnly(project(":auto-entity-keys"))
+	annotationProcessor(project(":auto-entity-keys"))
+	kapt(project(":auto-entity-keys"))
 
 	//JWT
 	implementation("com.auth0:java-jwt:3.8.1")

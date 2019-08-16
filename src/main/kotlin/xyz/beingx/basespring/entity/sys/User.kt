@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import xyz.beingx.basespring.entity.EntityBoolean
 import xyz.beingx.basespring.entity.EntityStatus
 import xyz.beingx.basespring.entity.base.BaseEntity
+import xyz.beingx.autoentitykeys.EntityAutoKey
 import javax.persistence.*
 
 /**
@@ -11,6 +12,7 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "users")
+@EntityAutoKey
 class User(
         @Column(nullable = false, unique = true)
         var name: String? = null,
