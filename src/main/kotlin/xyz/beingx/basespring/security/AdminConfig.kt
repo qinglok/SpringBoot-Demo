@@ -38,7 +38,7 @@ class AdminConfig{
     }
 
     fun initRoles() {
-        for (value in Roles.all) {
+        for (value in Roles.allRoles) {
             val t = Role(name = value, status = NORMAL)
             if (!dao.roleDao.exists(Example.of(t))) {
                 dao.roleDao.save(t)

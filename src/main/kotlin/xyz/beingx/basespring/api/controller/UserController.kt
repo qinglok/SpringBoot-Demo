@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
@@ -36,7 +37,7 @@ class UserController {
     @Autowired
     private lateinit var passwordEncoder: PasswordEncoder
 
-    @ApiOperation("查询指定ID用户", authorizations = [Authorization(Roles.user)])
+    @ApiOperation("查询指定ID用户", authorizations = [Authorization(Roles.USER)])
     @ApiResponses(ApiResponse(code = 200, message = "成功"), ApiResponse(code = 404, message = "找不到指定的用户"))
     @GetMapping("/{id}")
     fun user(@PathVariable id: Long): ResponseEntity<User> {
@@ -47,20 +48,23 @@ class UserController {
         return ResponseEntity.notFound().build()
     }
 
-    @ApiOperation("查询所有用户", authorizations = [Authorization(Roles.user)])
+    @Suppress("MVCPathVariableInspection")
+    @ApiOperation("查询所有用户", authorizations = [Authorization(Roles.MANAGER)])
     @ApiResponses(ApiResponse(code = 200, message = "成功"))
-    @ApiImplicitParams(ApiImplicitParam(name = "page", value = "页码，从0开始", dataType = "Int", example = "1"),
+    @ApiImplicitParams(
+            ApiImplicitParam(name = "page", value = "页码，从0开始", dataType = "Int", example = "1"),
             ApiImplicitParam(name = "size", value = "每页数量", dataType = "Int", example = "15"),
             ApiImplicitParam(name = "excludeSelf", value = "排除当前登录用户", dataType = "Boolean", example = "true"))
+    @PreAuthorize("hasRole('${Roles.MANAGER}')")
     @GetMapping
     fun users(page: Int?, size: Int?, excludeSelf: Boolean?): ResponseEntity<Page<User>> {
         val where = Specification.where<User> { root, _, criteriaBuilder ->
             val list = arrayListOf(
-                    criteriaBuilder.equal(root.get<User>(E.E_BaseEntity.status).`as`(EntityStatus::class.java), NORMAL),
-                    criteriaBuilder.equal(root.get<User>(E.E_User.isEnable).`as`(EntityBoolean::class.java), TRUE)
+                    criteriaBuilder.equal(root.get<User>(E.BaseEntity.status).`as`(EntityStatus::class.java), NORMAL),
+                    criteriaBuilder.equal(root.get<User>(E.User.isEnable).`as`(EntityBoolean::class.java), TRUE)
             )
             if (excludeSelf != false) {
-                list.add(criteriaBuilder.notEqual(root.get<User>(E.E_User.name).`as`(String::class.java), currentUser()?.username))
+                list.add(criteriaBuilder.notEqual(root.get<User>(E.User.name).`as`(String::class.java), currentUser()?.username))
             }
             criteriaBuilder.and(*list.toArray(Array(list.size) { i -> list[i] }))
         }
@@ -85,7 +89,7 @@ class UserController {
                 isEnable = TRUE,
                 status = NORMAL)
 
-        val optional = dao.roleDao.findOne(Example.of(Role(name = Roles.user)))
+        val optional = dao.roleDao.findOne(Example.of(Role(name = Roles.USER)))
         if (optional.isPresent) {
             user.roleSet.add(optional.get())
         }

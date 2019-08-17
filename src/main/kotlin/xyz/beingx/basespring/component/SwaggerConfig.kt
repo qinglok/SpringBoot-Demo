@@ -9,7 +9,6 @@ import springfox.documentation.builders.ApiInfoBuilder
 import springfox.documentation.builders.PathSelectors
 import springfox.documentation.builders.RequestHandlerSelectors
 import springfox.documentation.builders.ResponseMessageBuilder
-import springfox.documentation.schema.ModelRef
 import springfox.documentation.service.ApiInfo
 import springfox.documentation.service.ApiKey
 import springfox.documentation.service.Contact
@@ -81,8 +80,8 @@ class SwaggerConfig {
 //    private lateinit var typeResolver: TypeResolver
 
     private fun apiKey(): List<ApiKey> {
-        return List(Roles.all.size) { i ->
-            ApiKey(Roles.all[i], "token", "header")
+        return List(Roles.allRoles.size) { i ->
+            ApiKey(Roles.allRoles[i], "token", "header")
         }
     }
 

@@ -28,10 +28,7 @@ class TokenController {
     private lateinit var authenticationManager: AuthenticationManager
 
     @ApiOperation("创建Token（登录）")
-    @ApiResponses(
-            ApiResponse(code = 200, message = "成功"),
-            ApiResponse(code = 403, message = "鉴权失败")
-    )
+    @ApiResponses(ApiResponse(code = 200, message = "成功"), ApiResponse(code = 403, message = "鉴权失败"))
     @PostMapping
     fun post(@RequestBody requestUser: RequestUser): ResponseEntity<ResponseToken> {
         // Perform the security
@@ -49,7 +46,7 @@ class TokenController {
         return ResponseEntity.ok(ResponseToken(token = token))
     }
 
-    @ApiOperation("删除Token（退出登录）", authorizations = [Authorization(Roles.user)])
+    @ApiOperation("删除Token（退出登录）", authorizations = [Authorization(Roles.USER)])
     @ApiResponses(ApiResponse(code = 200, message = "成功"))
     @DeleteMapping
     fun delete(): ResponseEntity<Void> {

@@ -8,14 +8,14 @@ import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.lang.model.util.Elements
-import javax.tools.Diagnostic.Kind.ERROR
+import javax.tools.Diagnostic
 
 
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.SOURCE)
-annotation class EntityAutoKey
 
-@SupportedAnnotationTypes("xyz.beingx.autoentitykeys.EntityAutoKey")
+
+
+
+@SupportedAnnotationTypes( "xyz.beingx.autoentitykeys.EntityAutoKey")
 @SupportedOptions(EntityAnnotationProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME)
 class EntityAnnotationProcessor : AbstractProcessor() {
     private var elementUtils: Elements? = null
@@ -36,17 +36,17 @@ class EntityAnnotationProcessor : AbstractProcessor() {
     }
 
     override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
-
+        kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME] ?: run {
+            processingEnv.messager.printMessage(
+                    Diagnostic.Kind.ERROR,
+                    "Can't find the target directory for generated Kotlin files."
+            )
+            return false
+        }
 
         roundEnv?.getElementsAnnotatedWith(EntityAutoKey::class.java)?.let { annotatedElements ->
-            if (annotatedElements.isEmpty()) return false
-
-            kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME] ?: run {
-                processingEnv.messager.printMessage(
-                        ERROR,
-                        "Can't find the target directory for generated Kotlin files."
-                )
-                return false
+            if (annotatedElements.isEmpty()) {
+                return@let
             }
 
             val stringBuilder = StringBuilder()
@@ -59,10 +59,9 @@ class EntityAnnotationProcessor : AbstractProcessor() {
             }
             stringBuilder.appendln("}")
             write(kaptKotlinGeneratedDir + File.separator + "E.kt", stringBuilder.toString())
-            return true
         }
 
-        return false
+        return true
     }
 
     private fun createDataModel(element: Element): StringBuilder {
@@ -74,9 +73,8 @@ class EntityAnnotationProcessor : AbstractProcessor() {
         val packageName = elementUtils?.getPackageOf(typeElement)?.qualifiedName.toString()
         // 根据旧Java类名创建新的Java文件
         val className = typeElement.qualifiedName.toString().substring(packageName.length + 1)
-        val newClassName = "E_$className"
 
-        sb.appendln("    object $newClassName {")
+        sb.appendln("    object $className {")
 
         typeElement.enclosedElements.forEach { field ->
             if (field.kind.isField) {
