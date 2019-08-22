@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*
 import springfox.documentation.annotations.ApiIgnore
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.atomic.LongAdder
 
 @ApiIgnore
 @RequestMapping("/test")
@@ -21,8 +22,11 @@ class TestController {
             var data : Date
     )
 
+    private val addr = LongAdder()
     @GetMapping
     fun test2() : ResponseEntity<Date>{
+        addr.increment()
+        println("time : " + addr.toLong())
         return ResponseEntity.ok(Date())
     }
 }

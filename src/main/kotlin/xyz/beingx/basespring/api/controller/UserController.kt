@@ -23,7 +23,7 @@ import xyz.beingx.basespring.entity.NORMAL
 import xyz.beingx.basespring.entity.TRUE
 import xyz.beingx.basespring.entity.sys.Role
 import xyz.beingx.basespring.entity.sys.User
-import xyz.beingx.basespring.ext.currentUser
+import xyz.beingx.basespring.extend.currentUser
 import xyz.beingx.basespring.security.Roles
 
 

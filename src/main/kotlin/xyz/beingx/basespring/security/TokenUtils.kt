@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 import xyz.beingx.basespring.dao.Dao
 import xyz.beingx.basespring.entity.NORMAL
 import xyz.beingx.basespring.entity.sys.TokenRecord
-import xyz.beingx.basespring.ext.currentUser
+import xyz.beingx.basespring.extend.currentUser
 import java.util.*
 
 @Component

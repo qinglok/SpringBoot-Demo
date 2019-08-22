@@ -2,7 +2,7 @@ package xyz.beingx.basespring.component
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.AuditorAware
-import xyz.beingx.basespring.ext.currentUser
+import xyz.beingx.basespring.extend.currentUser
 import java.util.*
 
 @Configuration
